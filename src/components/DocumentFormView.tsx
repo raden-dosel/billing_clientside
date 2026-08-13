@@ -416,40 +416,59 @@ export const DocumentFormView: React.FC<DocumentFormViewProps> = ({
           <span className="text-rose-500 text-[10px] block font-semibold">{errors.materials}</span>
         )}
 
-        <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
+        <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
           {materials.map((item, idx) => (
             <div
               key={item.id}
-              className="flex items-center space-x-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200/80"
+              className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/90 hover:border-indigo-300 transition-all space-y-2.5 shadow-2xs"
             >
-              <span className="text-slate-400 font-mono text-[10px] w-4 shrink-0 text-center font-bold">
-                {idx + 1}
-              </span>
+              <div className="flex items-center justify-between border-b border-slate-200/60 pb-1.5">
+                <div className="flex items-center space-x-2">
+                  <span className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-mono text-[10px] font-bold flex items-center justify-center shrink-0">
+                    {idx + 1}
+                  </span>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    Material Item #{idx + 1}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeMaterial(item.id)}
+                  className="inline-flex items-center space-x-1 px-2 py-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
+                  title="Remove Item"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span className="text-[11px]">Remove</span>
+                </button>
+              </div>
 
-              <input
-                type="text"
-                value={item.description}
-                onChange={(e) => updateMaterial(item.id, 'description', e.target.value)}
-                placeholder="Item Description"
-                className="flex-1 bg-transparent text-slate-900 font-semibold text-xs outline-none focus:text-indigo-600"
-              />
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-2.5 items-start">
+                <div className="md:col-span-8 space-y-1">
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                    Item Description
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={item.description}
+                    onChange={(e) => updateMaterial(item.id, 'description', e.target.value)}
+                    placeholder="Enter full material or equipment description..."
+                    className="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-slate-900 font-medium text-xs leading-relaxed outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all resize-y shadow-2xs"
+                  />
+                </div>
 
-              <input
-                type="text"
-                value={item.quantity}
-                onChange={(e) => updateMaterial(item.id, 'quantity', e.target.value)}
-                placeholder="Qty (e.g. 1 Unit)"
-                className="w-24 bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-800 text-center text-xs font-mono font-semibold outline-none focus:border-indigo-500"
-              />
-
-              <button
-                type="button"
-                onClick={() => removeMaterial(item.id)}
-                className="p-1.5 text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
-                title="Remove Item"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+                <div className="md:col-span-4 space-y-1">
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                    Quantity
+                  </label>
+                  <input
+                    type="text"
+                    value={item.quantity}
+                    onChange={(e) => updateMaterial(item.id, 'quantity', e.target.value)}
+                    placeholder="e.g. 4 Rolls 1000m"
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-slate-800 text-xs font-mono font-semibold outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all shadow-2xs"
+                  />
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -472,40 +491,59 @@ export const DocumentFormView: React.FC<DocumentFormViewProps> = ({
           </button>
         </div>
 
-        <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
+        <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
           {labor.map((item, idx) => (
             <div
               key={item.id}
-              className="flex items-center space-x-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200/80"
+              className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/90 hover:border-cyan-300 transition-all space-y-2.5 shadow-2xs"
             >
-              <span className="text-slate-400 font-mono text-[10px] w-4 shrink-0 text-center font-bold">
-                {idx + 1}
-              </span>
+              <div className="flex items-center justify-between border-b border-slate-200/60 pb-1.5">
+                <div className="flex items-center space-x-2">
+                  <span className="w-5 h-5 rounded-full bg-cyan-100 text-cyan-700 font-mono text-[10px] font-bold flex items-center justify-center shrink-0">
+                    {idx + 1}
+                  </span>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    Labor Item #{idx + 1}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeLabor(item.id)}
+                  className="inline-flex items-center space-x-1 px-2 py-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
+                  title="Remove Item"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span className="text-[11px]">Remove</span>
+                </button>
+              </div>
 
-              <input
-                type="text"
-                value={item.description}
-                onChange={(e) => updateLabor(item.id, 'description', e.target.value)}
-                placeholder="Labor Description"
-                className="flex-1 bg-transparent text-slate-900 font-semibold text-xs outline-none focus:text-indigo-600"
-              />
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-2.5 items-start">
+                <div className="md:col-span-8 space-y-1">
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                    Item Description
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={item.description}
+                    onChange={(e) => updateLabor(item.id, 'description', e.target.value)}
+                    placeholder="Enter full labor or service description..."
+                    className="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-slate-900 font-medium text-xs leading-relaxed outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100 transition-all resize-y shadow-2xs"
+                  />
+                </div>
 
-              <input
-                type="text"
-                value={item.quantity}
-                onChange={(e) => updateLabor(item.id, 'quantity', e.target.value)}
-                placeholder="Qty (e.g. 2 Crew / 3 Days)"
-                className="w-28 bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-800 text-center text-xs font-mono font-semibold outline-none focus:border-indigo-500"
-              />
-
-              <button
-                type="button"
-                onClick={() => removeLabor(item.id)}
-                className="p-1.5 text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
-                title="Remove Item"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+                <div className="md:col-span-4 space-y-1">
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                    Quantity
+                  </label>
+                  <input
+                    type="text"
+                    value={item.quantity}
+                    onChange={(e) => updateLabor(item.id, 'quantity', e.target.value)}
+                    placeholder="e.g. 2 Technicians 2 Days"
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-slate-800 text-xs font-mono font-semibold outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100 transition-all shadow-2xs"
+                  />
+                </div>
+              </div>
             </div>
           ))}
         </div>
