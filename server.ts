@@ -1,10 +1,35 @@
 import express from 'express';
+import cors from 'cors';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
 
 async function startServer() {
   const app = express();
   const PORT = 3000;
+
+  // CORS Configuration
+  const allowedOrigins = [
+    'https://billing-clientside-lnwdg2pvz-raden-dosels-projects.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:5173',
+  ];
+
+  app.use(
+    cors({
+      origin: (origin, callback) => {
+        // Allow requests with no origin (e.g. same-origin, curl, mobile apps)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+          return callback(null, true);
+        }
+        // Allow all origins by default for seamless API access
+        return callback(null, true);
+      },
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
+    })
+  );
 
   app.use(express.json({ limit: '10mb' }));
 
