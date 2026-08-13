@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>SEIA Security Mobile Billing</title>
+    <meta name="description" content="SEIA Security System Services - Mobile Billing, Invoices, Quotations & Receipts Client." />
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="/seia_logo.svg" />
+    <link rel="apple-touch-icon" href="/seia_logo.svg" />
+    <meta property="og:title" content="SEIA Security Mobile Billing" />
+    <meta property="og:description" content="Official Mobile Billing Client for SEIA Security System Services." />
+    <meta property="og:type" content="website" />
+  </head>
+  <body class="bg-slate-950 text-slate-100 antialiased overflow-x-hidden selection:bg-indigo-500 selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch((err) => {
+            console.log('SW registration failed:', err);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
+

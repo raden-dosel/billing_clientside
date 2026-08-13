@@ -1,0 +1,15 @@
+{
+  "id": "/",
+  "name": "SEIA Security Mobile Billing",
+  "short_name": "SEIA Billing",
+  "description": "SEIA Security System Services - Mobile Billing, Invoices, Quotations & Receipts Client.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    { "src": "/seia_logo.svg", "sizes": "192x192 512x512", "type": "image/svg+xml" }
+  ]
+}

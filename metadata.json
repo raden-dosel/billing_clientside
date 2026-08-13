@@ -1,0 +1,6 @@
+{
+  "name": "SEIA Mobile Billing",
+  "description": "Mobile Billing, Invoices, Quotations & Receipts Client for SEIA Security System Services.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
