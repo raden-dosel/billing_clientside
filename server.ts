@@ -7,25 +7,10 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
-  // CORS Configuration
-  const allowedOrigins = [
-    //'https://billing-clientside-9rnzdf0ff-raden-dosels-projects.vercel.app',
-    'billing-clientside.vercel.app',
-    'http://localhost:3000',
-    'http://localhost:5173',
-  ];
-
+  // Dynamic CORS Configuration (reflects any requesting origin e.g. *.vercel.app, localhost, custom domains)
   app.use(
     cors({
-      origin: (origin, callback) => {
-        // Allow requests with no origin (e.g. same-origin, curl, mobile apps)
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
-          return callback(null, true);
-        }
-        // Allow all origins by default for seamless API access
-        return callback(null, true);
-      },
+      origin: true,
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],

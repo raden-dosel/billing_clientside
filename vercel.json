@@ -2,11 +2,15 @@
   "version": 2,
   "rewrites": [
     {
-      "source": "/api/generate-pdf",
-      "destination": "/api/generate-pdf.ts"
+      "source": "/api/v1/:path*",
+      "destination": "https://pdfbuilder-2w8u.onrender.com/api/v1/:path*"
     },
     {
-      "source": "/(.*)",
+      "source": "/api/generate-pdf",
+      "destination": "/api/generate-pdf"
+    },
+    {
+      "source": "/((?!api/.*).*)",
       "destination": "/index.html"
     }
   ]
