@@ -19,7 +19,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { docData, baseUrl = 'https://pdfbuilder-2w8u.onrender.com/api/v1', apiKey = 'secret-billing-api-key' } = req.body || {};
+    const { docData, baseUrl = 'https://pdfbuilder-2w8u.onrender.com', apiKey = 'secret-billing-api-key' } = req.body || {};
 
     if (!docData) {
       return res.status(400).json({ error: 'Missing document data payload' });
