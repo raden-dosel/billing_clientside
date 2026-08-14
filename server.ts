@@ -9,7 +9,8 @@ async function startServer() {
 
   // CORS Configuration
   const allowedOrigins = [
-    'https://billing-clientside-lnwdg2pvz-raden-dosels-projects.vercel.app',
+    //'https://billing-clientside-9rnzdf0ff-raden-dosels-projects.vercel.app',
+    'billing-clientside.vercel.app',
     'http://localhost:3000',
     'http://localhost:5173',
   ];
