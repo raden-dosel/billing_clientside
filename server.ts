@@ -5,7 +5,7 @@ import { createServer as createViteServer } from 'vite';
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
   // Dynamic CORS Configuration (reflects any requesting origin e.g. *.vercel.app, localhost, custom domains)
   app.use(
