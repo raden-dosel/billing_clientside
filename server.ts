@@ -5,7 +5,7 @@ import { createServer as createViteServer } from 'vite';
 
 async function startServer() {
   const app = express();
-  const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+  const PORT = 3000;
 
   // Dynamic CORS Configuration (reflects any requesting origin e.g. *.vercel.app, localhost, custom domains)
   app.use(
@@ -27,7 +27,7 @@ async function startServer() {
   // Microservice PDF Generation Proxy
   app.post('/api/generate-pdf', async (req, res) => {
     try {
-      const { docData, baseUrl = 'https://pdfbuilder-2w8u.onrender.com/api/v1', apiKey = 'secret-billing-api-key' } = req.body;
+      const { docData, baseUrl = 'https://pdfbuilder-2w8u.onrender.com/api/v1', apiKey = 'TrrECb181CEcLjoVawVZYRJEuwsq0FDj' } = req.body;
 
       if (!docData) {
         return res.status(400).json({ error: 'Missing document data payload' });

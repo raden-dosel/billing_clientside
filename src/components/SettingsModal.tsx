@@ -29,7 +29,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
   const handleReset = () => {
     setBaseUrl('https://pdfbuilder-2w8u.onrender.com/api/v1');
-    setApiKey('secret-billing-api-key');
+    setApiKey('TrrECb181CEcLjoVawVZYRJEuwsq0FDj');
   };
 
   return (

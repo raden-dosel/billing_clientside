@@ -43,7 +43,7 @@ async function fetchDirectFromMicroservice(
   settings: AppSettings
 ): Promise<Blob> {
   const cleanBaseUrl = (settings.baseUrl || 'https://pdfbuilder-2w8u.onrender.com/api/v1').replace(/\/+$/, '');
-  const apiKey = settings.apiKey || 'secret-billing-api-key';
+  const apiKey = settings.apiKey || 'TrrECb181CEcLjoVawVZYRJEuwsq0FDj';
   const docType = docData.docType || 'INV';
   const payload = buildMicroservicePayload(docData);
 

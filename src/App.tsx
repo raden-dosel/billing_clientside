@@ -20,7 +20,7 @@ export default function App() {
     const savedApiKey = localStorage.getItem('seia_api_key');
     return {
       baseUrl: savedBaseUrl || 'https://pdfbuilder-2w8u.onrender.com/api/v1',
-      apiKey: savedApiKey || 'secret-billing-api-key',
+      apiKey: savedApiKey || 'TrrECb181CEcLjoVawVZYRJEuwsq0FDj',
     };
   });
 
