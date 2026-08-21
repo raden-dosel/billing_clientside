@@ -51,35 +51,27 @@ async function fetchDirectFromMicroservice(
   if (docType === 'QTN') pluralType = 'quotations';
   if (docType === 'RCP') pluralType = 'receipts';
 
-  const candidatePaths = [
-    `/generate/${pluralType}`,
-    `/${pluralType}/generate`,
-  ];
+  const targetUrl = `${cleanBaseUrl}/generate/${pluralType}`;
 
-  let lastErrorText = '';
-  for (const pathSuffix of candidatePaths) {
-    const targetUrl = `${cleanBaseUrl}${pathSuffix}`;
-    try {
-      const res = await fetch(targetUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-Key': apiKey,
-        },
-        body: JSON.stringify(payload),
-      });
+  const res = await fetch(targetUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': apiKey,
+    },
+    body: JSON.stringify(payload),
+  });
 
-      if (res.ok) {
-        return await res.blob();
-      } else {
-        lastErrorText = await res.text().catch(() => `HTTP ${res.status}`);
-      }
-    } catch (err: any) {
-      lastErrorText = err.message || 'Direct network request failed';
-    }
+  if (res.ok) {
+    return await res.blob();
   }
 
-  throw new Error(`Direct microservice call failed: ${lastErrorText}`);
+  if (res.status === 429) {
+    throw new Error('Microservice rate limit reached (429). Please wait a few seconds before trying again.');
+  }
+
+  const errorText = await res.text().catch(() => `HTTP ${res.status}`);
+  throw new Error(`Microservice responded with status ${res.status}: ${errorText}`);
 }
 
 /**
@@ -89,7 +81,7 @@ export async function fetchMicroservicePdf(
   docData: DocumentData,
   settings: AppSettings
 ): Promise<GeneratedPdfInfo> {
-  let blob: Blob;
+  let blob: Blob | null = null;
 
   try {
     const response = await fetch('/api/generate-pdf', {
@@ -104,29 +96,28 @@ export async function fetchMicroservicePdf(
       }),
     });
 
-    if (response.status === 404) {
-      console.warn('Proxy /api/generate-pdf returned 404. Falling back to direct microservice request.');
-      blob = await fetchDirectFromMicroservice(docData, settings);
-    } else if (!response.ok) {
+    if (response.status === 429) {
+      throw new Error('Rate limited (429). Please wait a few seconds before generating another PDF.');
+    }
+
+    if (!response.ok) {
       const errorJson = await response.json().catch(() => null);
       const detailMsg = errorJson?.details || errorJson?.error || `HTTP ${response.status} from PDF proxy`;
       throw new Error(detailMsg);
-    } else {
-      blob = await response.blob();
     }
-  } catch (err: any) {
-    if (err.message && err.message.includes('404')) {
-      blob = await fetchDirectFromMicroservice(docData, settings);
-    } else {
-      try {
-        blob = await fetchDirectFromMicroservice(docData, settings);
-      } catch (directErr: any) {
-        throw new Error(err.message || directErr.message || 'Failed to generate PDF document');
-      }
+
+    blob = await response.blob();
+  } catch (proxyErr: any) {
+    // If the proxy failed because it's not present (e.g. static host) or 404/network error, try direct fetch once
+    if (proxyErr.message && proxyErr.message.includes('429')) {
+      throw proxyErr;
     }
+    
+    console.warn('Proxy /api/generate-pdf failed, attempting direct fetch:', proxyErr.message);
+    blob = await fetchDirectFromMicroservice(docData, settings);
   }
 
-  if (blob.type && !blob.type.includes('pdf') && blob.size < 200) {
+  if (!blob || (blob.type && !blob.type.includes('pdf') && blob.size < 200)) {
     throw new Error('Microservice response was not a valid PDF document.');
   }
 

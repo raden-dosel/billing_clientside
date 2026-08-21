@@ -69,55 +69,43 @@ async function startServer() {
         notes: 'Official billing document generated via SEIA Security Mobile System',
       };
 
-      // Determine candidate path suffixes (supports both /generate/invoices and /invoices/generate)
+      // Exact microservice endpoint
       let pluralType = 'invoices';
       if (docType === 'QTN') pluralType = 'quotations';
       if (docType === 'RCP') pluralType = 'receipts';
 
-      const candidatePaths = [
-        `/generate/${pluralType}`,
-        `/${pluralType}/generate`,
-      ];
+      const targetUrl = `${cleanBaseUrl}/generate/${pluralType}`;
 
-      let lastErrorResponse: { status: number; text: string } | null = null;
-      let pdfBuffer: Buffer | null = null;
+      const upstreamRes = await fetch(targetUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': apiKey,
+        },
+        body: JSON.stringify(payload),
+      });
 
-      for (const pathSuffix of candidatePaths) {
-        const targetUrl = `${cleanBaseUrl}${pathSuffix}`;
-        try {
-          const upstreamRes = await fetch(targetUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-API-Key': apiKey,
-            },
-            body: JSON.stringify(payload),
-          });
-
-          if (upstreamRes.ok) {
-            const arrayBuf = await upstreamRes.arrayBuffer();
-            pdfBuffer = Buffer.from(arrayBuf);
-            break;
-          } else {
-            const errText = await upstreamRes.text();
-            lastErrorResponse = { status: upstreamRes.status, text: errText };
-          }
-        } catch (fetchErr: any) {
-          lastErrorResponse = { status: 502, text: fetchErr.message || 'Fetch failed' };
-        }
-      }
-
-      if (pdfBuffer) {
+      if (upstreamRes.ok) {
+        const arrayBuf = await upstreamRes.arrayBuffer();
+        const pdfBuffer = Buffer.from(arrayBuf);
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `inline; filename="${payload.document_id}.pdf"`);
         return res.send(pdfBuffer);
       }
 
-      // If microservice request returned an error
-      return res.status(lastErrorResponse?.status || 500).json({
+      if (upstreamRes.status === 429) {
+        return res.status(429).json({
+          error: 'Rate Limited',
+          status: 429,
+          details: 'PDF generation rate limit exceeded. Please wait a moment before trying again.',
+        });
+      }
+
+      const errText = await upstreamRes.text().catch(() => '');
+      return res.status(upstreamRes.status).json({
         error: 'PDF Microservice Error',
-        status: lastErrorResponse?.status,
-        details: lastErrorResponse?.text || 'Failed to pull generated PDF from microservice.',
+        status: upstreamRes.status,
+        details: errText || `Microservice responded with status ${upstreamRes.status}`,
       });
     } catch (err: any) {
       return res.status(500).json({
